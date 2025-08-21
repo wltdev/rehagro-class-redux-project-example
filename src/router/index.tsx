@@ -3,6 +3,7 @@ import { CustomerManagement } from '../pages/CustomerManagement';
 import { PageUseState } from '../pages/useState';
 import { PageUseEffect } from '../pages/useEffect';
 import { PageUseRef } from '../pages/useRef';
+import { PageUseReducer } from '../pages/useReducer';
 
 export const router = createBrowserRouter([
     {
@@ -20,5 +21,9 @@ export const router = createBrowserRouter([
     {
         path: '/useref',
         element: <PageUseRef />
+    },
+    {
+        path: '/usereducer',
+        element: <PageUseReducer />
     }
 ]);

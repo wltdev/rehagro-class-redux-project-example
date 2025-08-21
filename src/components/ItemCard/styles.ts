@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 
 export const Card = styled.div`
+    position: relative;
+    cursor: pointer;
     display: flex;
     flex-direction: row;
     justify-content: space-between;

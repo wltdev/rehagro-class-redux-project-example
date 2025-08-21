@@ -1,4 +1,4 @@
-import { Container, Typography } from '@mui/material';
+import { Box, Container, Typography } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import Input from '../../components/ui/Input';
 import Button from '../../components/ui/Button';
@@ -51,7 +51,9 @@ export const PageUseRef = () => {
                 Renders: {renders.current}
             </Typography>
 
-            <Button onClick={focusInput}>Focus Input</Button>
+            <Box sx={{ mt: 4 }}>
+                <Button onClick={focusInput}>Focus Input</Button>
+            </Box>
         </Container>
     );
 };

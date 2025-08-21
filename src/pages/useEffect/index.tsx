@@ -1,7 +1,7 @@
 import { Box, Container, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import Button from '../../components/ui/Button';
-import { Item, ItemCard } from './components/ItemCard';
+import { Item, ItemCard } from '../../components/ItemCard';
 import { ListItems } from './styles';
 
 type ResourceType = 'posts' | 'users' | 'comments';
