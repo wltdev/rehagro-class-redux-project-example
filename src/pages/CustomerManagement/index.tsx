@@ -20,11 +20,12 @@ import type { Customer } from '../../types/customer';
 import { GridColDef } from '@mui/x-data-grid';
 import { CellType } from '../../types/table';
 import { CustomTable } from '../../components/ui/CustomTable';
-import { PaperContainer } from './styles';
+import { CustomersGrid, PaperContainer } from './styles';
 import { CustomerModal } from '../../components/customer/CustomerModal';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { navigatePage } from '../../store/pageReducer';
+import { CustomerCard } from '../../components/customer/CustomerCard';
 
 export const CustomerManagement = () => {
     const { clientes, clienteSelecionado } = useSelector((state: RootState) => state.clientes);
@@ -34,72 +35,13 @@ export const CustomerManagement = () => {
         isModalOpen,
         isSubmitting,
         isAddMode,
-        setSelectedId,
+        handleClienteSelecionado,
         handleDeleteCustomer,
         closeModal,
         handleOpenAddModal,
         handleOpenEditModal,
         handleSubmit
     } = useCustomerManagement();
-
-    const columns: GridColDef[] = useMemo(
-        () => [
-            {
-                flex: 0.8,
-                headerName: 'ID',
-                field: 'id',
-                disableColumnMenu: true,
-                renderCell: ({ row }: CellType<Customer>) => <Typography variant="body2">{row.id}</Typography>
-            },
-            {
-                flex: 0.8,
-                headerName: 'Name',
-                field: 'name',
-                disableColumnMenu: true,
-                renderCell: ({ row }: CellType<Customer>) => <Typography variant="body2">{row.name}</Typography>
-            },
-            {
-                flex: 0.8,
-                headerName: 'Email',
-                field: 'email',
-                disableColumnMenu: true,
-                renderCell: ({ row }: CellType<Customer>) => <Typography variant="body2">{row.email}</Typography>
-            },
-            {
-                flex: 0.8,
-                headerName: 'Phone',
-                field: 'phone',
-                disableColumnMenu: true,
-                renderCell: ({ row }: CellType<Customer>) => <Typography variant="body2">{row.phone}</Typography>
-            },
-            {
-                flex: 0.8,
-                headerName: 'Actions',
-                field: 'actions',
-                disableColumnMenu: true,
-                renderCell: ({ row }: CellType<Customer>) => (
-                    <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}>
-                        <Tooltip title="Edit">
-                            <IconButton color="primary" onClick={() => handleOpenEditModal(row)} size="small">
-                                <EditIcon />
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Delete">
-                            <IconButton color="error" onClick={() => handleDeleteCustomer(row.id)} size="small">
-                                <DeleteIcon />
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Selecionar cliente">
-                            <IconButton color="warning" onClick={() => setSelectedId(row.id)} size="small">
-                                <SaveIcon />
-                            </IconButton>
-                        </Tooltip>
-                    </Box>
-                )
-            }
-        ],
-        []
-    );
 
     return (
         <Container
@@ -135,19 +77,21 @@ export const CustomerManagement = () => {
                 </Toolbar>
             </AppBar>
 
-            <PaperContainer elevation={6}>
-                <TableContainer sx={{ maxHeight: 440, padding: 2 }}>
-                    <CustomTable columns={columns} rows={clientes} />
-                </TableContainer>
-            </PaperContainer>
+            <CustomersGrid>
+                {clientes.map((cliente) => (
+                    <CustomerCard
+                        key={cliente.id}
+                        customer={cliente}
+                        handleOpenEditModal={handleOpenEditModal}
+                        handleDeleteCustomer={handleDeleteCustomer}
+                        handleClienteSelecionado={handleClienteSelecionado}
+                    />
+                ))}
+            </CustomersGrid>
 
             <Typography variant="h6" component="h2" sx={{ mt: 4 }}>
                 {clienteSelecionado.name}
             </Typography>
-
-            <Button onClick={() => dispatch(navigatePage('outratela'))} sx={{ mt: 4, backgroundColor: '#fff' }}>
-                Outra tela
-            </Button>
 
             <CustomerModal
                 isModalOpen={isModalOpen}

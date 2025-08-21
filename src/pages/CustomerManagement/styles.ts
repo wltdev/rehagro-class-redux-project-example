@@ -82,3 +82,23 @@ export const ModalCloseButton = styled.button`
 export const PaperContainer = styled(Paper)`
     width: 100%;
 `;
+
+export const CustomersGrid = styled.div`
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 16px;
+    width: 100%;
+
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    @media (max-width: 480px) {
+        gap: 8px;
+    }
+
+    @media (max-width: 360px) {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+`;

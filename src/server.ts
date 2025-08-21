@@ -35,5 +35,8 @@ createServer({
         this.get('/customers', (schema, request) => {
             return schema.all('customer');
         });
+
+        // Permite requisições externas passarem pelo MirageJS
+        this.passthrough('https://jsonplaceholder.typicode.com/**');
     }
 });

@@ -1,5 +1,5 @@
 import { Customer } from './../../types/customer';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'react-toastify';
 import axios from 'axios';
@@ -33,25 +33,20 @@ export const useCustomerManagement = () => {
         }
     };
 
-    const handleClienteSelecionado = (id: string) => {
-        const cliente = clientes.find((cliente) => cliente.id === id);
-        dispatch(setClienteSelecionado(cliente));
-    };
+    const handleClienteSelecionado = useCallback(
+        (customer: Customer) => {
+            dispatch(setClienteSelecionado(customer));
+        },
+        [dispatch]
+    );
 
     useEffect(() => {
-        console.log('Foi acionado o useEffect dos clientes iniciais');
-        fetchInitialCustomers();
+        if (!clientes.length) {
+            fetchInitialCustomers();
+        }
     }, []);
 
-    useEffect(() => {
-        console.log('Foi acionado');
-        if (selectedId) {
-            console.log('Buscou o cliente');
-            handleClienteSelecionado(selectedId);
-        }
-    }, [selectedId]);
-
-    const handleCreateCustomer = async (data: Omit<Customer, 'id' | 'createdAt'>) => {
+    const handleCreateCustomer = useCallback(async (data: Omit<Customer, 'id' | 'createdAt'>) => {
         setIsSubmitting(true);
 
         try {
@@ -69,9 +64,9 @@ export const useCustomerManagement = () => {
         } finally {
             setIsSubmitting(false);
         }
-    };
+    }, [dispatch]);
 
-    const handleUpdateCustomer = async (data: Customer) => {
+    const handleUpdateCustomer = useCallback(async (data: Customer) => {
         if (!selectedCustomer) return;
 
         setIsSubmitting(true);
@@ -89,9 +84,9 @@ export const useCustomerManagement = () => {
         } finally {
             setIsSubmitting(false);
         }
-    };
+    }, [dispatch, selectedCustomer]);
 
-    const handleDeleteCustomer = async (customerId: string) => {
+    const handleDeleteCustomer = useCallback(async (customerId: string) => {
         if (window.confirm('Are you sure you want to delete this customer?')) {
             try {
                 dispatch(
@@ -105,43 +100,43 @@ export const useCustomerManagement = () => {
                 toast.error('Failed to delete customer');
             }
         }
-    };
+    }, [dispatch]);
 
-    const handleEditCustomer = (customer: Customer) => {
+    const handleEditCustomer = useCallback((customer: Customer) => {
         setSelectedCustomer(customer);
         setIsModalOpen(true);
-    };
+    }, []);
 
-    const closeModal = () => {
+    const closeModal = useCallback(() => {
         setIsModalOpen(false);
         setSelectedCustomer(null);
-    };
+    }, []);
 
-    const handleOpenAddModal = () => {
+    const handleOpenAddModal = useCallback(() => {
         setIsAddMode(true);
         // Aqui precisamos abrir o modal sem um cliente selecionado
         handleEditCustomer(null as any); // Forçamos o tipo para abrir o modal sem cliente
-    };
+    }, [handleEditCustomer]);
 
-    const handleOpenEditModal = (customer: Customer) => {
+    const handleOpenEditModal = useCallback((customer: Customer) => {
         setIsAddMode(false);
         handleEditCustomer(customer);
-    };
+    }, [handleEditCustomer]);
 
-    const handleSubmit = (data: Omit<Customer, 'id' | 'createdAt'>) => {
+    const handleSubmit = useCallback((data: Omit<Customer, 'id' | 'createdAt'>) => {
         if (isAddMode) {
             return handleCreateCustomer(data);
         } else {
             return handleUpdateCustomer(data);
         }
-    };
+    }, [isAddMode, handleCreateCustomer, handleUpdateCustomer]);
 
     return {
         selectedCustomer,
         isModalOpen,
         isSubmitting,
         isAddMode,
-        setSelectedId,
+        handleClienteSelecionado,
         handleOpenAddModal,
         handleOpenEditModal,
         handleDeleteCustomer,

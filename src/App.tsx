@@ -1,12 +1,12 @@
 import GlobalStyles from './styles/GlobalStyles';
-import { CustomerManagement } from './pages/CustomerManagement';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import theme from './styles/theme';
 import { ToastContainer } from 'react-toastify';
 import { Provider as ReduxProvider } from 'react-redux';
 import './server';
 import { store } from './store';
-import { Pages } from './pages';
+import { RouterProvider } from 'react-router/dom';
+import { router } from './router';
 
 function App() {
     return (
@@ -14,7 +14,7 @@ function App() {
             <ThemeProvider theme={theme}>
                 <CssBaseline />
                 <GlobalStyles />
-                <Pages />
+                <RouterProvider router={router} />
                 <ToastContainer />
             </ThemeProvider>
         </ReduxProvider>

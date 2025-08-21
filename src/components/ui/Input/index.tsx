@@ -8,18 +8,21 @@ interface InputProps extends Omit<TextFieldProps, 'error'> {
     fullWidth?: boolean;
 }
 
-export const Input: React.FC<InputProps> = ({ label, error, fullWidth = false, ...rest }) => {
-    return (
-        <TextField
-            label={label}
-            error={!!error}
-            helperText={error}
-            fullWidth={fullWidth}
-            variant="outlined"
-            margin="normal"
-            {...rest}
-        />
-    );
-};
+export const Input = React.forwardRef<HTMLInputElement, InputProps>(
+    ({ label, error, fullWidth = false, ...rest }, ref) => {
+        return (
+            <TextField
+                inputRef={ref}
+                label={label}
+                error={!!error}
+                helperText={error}
+                fullWidth={fullWidth}
+                variant="outlined"
+                margin="normal"
+                {...rest}
+            />
+        );
+    }
+);
 
 export default Input;
