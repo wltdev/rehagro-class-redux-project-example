@@ -16,7 +16,6 @@ import { RootState } from '../../store';
 export const useCustomerManagement = () => {
     const { clientes } = useSelector((state: RootState) => state.clientes);
     const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
-    const [selectedId, setSelectedId] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -46,61 +45,70 @@ export const useCustomerManagement = () => {
         }
     }, []);
 
-    const handleCreateCustomer = useCallback(async (data: Omit<Customer, 'id' | 'createdAt'>) => {
-        setIsSubmitting(true);
+    const handleCreateCustomer = useCallback(
+        async (data: Omit<Customer, 'id' | 'createdAt'>) => {
+            setIsSubmitting(true);
 
-        try {
-            const newCustomer: Customer = {
-                id: uuidv4(),
-                ...data,
-                createdAt: new Date()
-            };
-            dispatch(addNewCliente(newCustomer));
-            setIsModalOpen(false);
-            toast.success('Customer created successfully');
-        } catch (error) {
-            console.error('Error creating customer:', error);
-            toast.error('Failed to create customer');
-        } finally {
-            setIsSubmitting(false);
-        }
-    }, [dispatch]);
-
-    const handleUpdateCustomer = useCallback(async (data: Customer) => {
-        if (!selectedCustomer) return;
-
-        setIsSubmitting(true);
-
-        try {
-            setIsModalOpen(false);
-            setSelectedCustomer(null);
-
-            dispatch(updateCliente(data));
-
-            toast.success('Customer updated successfully');
-        } catch (error) {
-            console.error('Error updating customer:', error);
-            toast.error('Failed to update customer');
-        } finally {
-            setIsSubmitting(false);
-        }
-    }, [dispatch, selectedCustomer]);
-
-    const handleDeleteCustomer = useCallback(async (customerId: string) => {
-        if (window.confirm('Are you sure you want to delete this customer?')) {
             try {
-                dispatch(
-                    deleteCliente({
-                        id: customerId
-                    })
-                );
-                toast.success('Customer deleted successfully');
+                const newCustomer: Customer = {
+                    id: uuidv4(),
+                    ...data,
+                    createdAt: new Date()
+                };
+                dispatch(addNewCliente(newCustomer));
+                setIsModalOpen(false);
+                toast.success('Customer created successfully');
             } catch (error) {
-                console.error('Error deleting customer:', error);
-                toast.error('Failed to delete customer');
+                console.error('Error creating customer:', error);
+                toast.error('Failed to create customer');
+            } finally {
+                setIsSubmitting(false);
             }
-        }
-    }, [dispatch]);
+        },
+        [dispatch]
+    );
+
+    const handleUpdateCustomer = useCallback(
+        async (data: Customer) => {
+            if (!selectedCustomer) return;
+
+            setIsSubmitting(true);
+
+            try {
+                setIsModalOpen(false);
+                setSelectedCustomer(null);
+
+                dispatch(updateCliente(data));
+
+                toast.success('Customer updated successfully');
+            } catch (error) {
+                console.error('Error updating customer:', error);
+                toast.error('Failed to update customer');
+            } finally {
+                setIsSubmitting(false);
+            }
+        },
+        [dispatch, selectedCustomer]
+    );
+
+    const handleDeleteCustomer = useCallback(
+        async (customerId: string) => {
+            if (window.confirm('Are you sure you want to delete this customer?')) {
+                try {
+                    dispatch(
+                        deleteCliente({
+                            id: customerId
+                        })
+                    );
+                    toast.success('Customer deleted successfully');
+                } catch (error) {
+                    console.error('Error deleting customer:', error);
+                    toast.error('Failed to delete customer');
+                }
+            }
+        },
+        [dispatch]
+    );
 
     const handleEditCustomer = useCallback((customer: Customer) => {
         setSelectedCustomer(customer);
@@ -118,18 +126,24 @@ export const useCustomerManagement = () => {
         handleEditCustomer(null as any); // Forçamos o tipo para abrir o modal sem cliente
     }, [handleEditCustomer]);
 
-    const handleOpenEditModal = useCallback((customer: Customer) => {
-        setIsAddMode(false);
-        handleEditCustomer(customer);
-    }, [handleEditCustomer]);
+    const handleOpenEditModal = useCallback(
+        (customer: Customer) => {
+            setIsAddMode(false);
+            handleEditCustomer(customer);
+        },
+        [handleEditCustomer]
+    );
 
-    const handleSubmit = useCallback((data: Omit<Customer, 'id' | 'createdAt'>) => {
-        if (isAddMode) {
-            return handleCreateCustomer(data);
-        } else {
-            return handleUpdateCustomer(data);
-        }
-    }, [isAddMode, handleCreateCustomer, handleUpdateCustomer]);
+    const handleSubmit = useCallback(
+        (data: Omit<Customer, 'id' | 'createdAt'>) => {
+            if (isAddMode) {
+                return handleCreateCustomer(data);
+            } else {
+                return handleUpdateCustomer(data);
+            }
+        },
+        [isAddMode, handleCreateCustomer, handleUpdateCustomer]
+    );
 
     return {
         selectedCustomer,

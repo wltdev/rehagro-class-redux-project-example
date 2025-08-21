@@ -4,6 +4,7 @@ import { PageUseState } from '../pages/useState';
 import { PageUseEffect } from '../pages/useEffect';
 import { PageUseRef } from '../pages/useRef';
 import { PageUseReducer } from '../pages/useReducer';
+import { PageUseMemo } from '../pages/useMemo';
 
 export const router = createBrowserRouter([
     {
@@ -25,5 +26,9 @@ export const router = createBrowserRouter([
     {
         path: '/usereducer',
         element: <PageUseReducer />
+    },
+    {
+        path: '/usememo',
+        element: <PageUseMemo />
     }
 ]);
